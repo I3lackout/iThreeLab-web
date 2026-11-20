@@ -1,0 +1,29 @@
+[Unit]
+Description=I3 Economics Intelligence public synthetic API
+After=network.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+WorkingDirectory=/opt/ithreelab-economics/current
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/ithreelab-economics/current/.venv/bin/python -m uvicorn app.public:app --host 127.0.0.1 --port 8765 --no-proxy-headers --workers 1 --limit-concurrency 16 --timeout-keep-alive 5
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+CapabilityBoundingSet=
+MemoryMax=128M
+CPUQuota=50%
+TasksMax=32
+LimitNOFILE=1024
+
+[Install]
+WantedBy=multi-user.target

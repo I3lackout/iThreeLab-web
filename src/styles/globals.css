@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+@theme {
+  --color-void: #08090D;
+  --color-surface: #151520;
+  --color-surface-elevated: #1C1C2B;
+  --color-text: #F5F5FA;
+  --color-muted: #B4B4CC;
+  --color-i3lackout: #FF2020;
+  --color-universe: #8B5CF6;
+  --color-labs: #00E5FF;
+  --color-studio: #F59E0B;
+
+  --font-sans: "Inter", "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-void);
+    color: var(--color-text);
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--color-void);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--color-labs);
+    outline-offset: 3px;
+    border-radius: 0.375rem;
+  }
+}
+
+.i3-grid-backdrop {
+  background-image:
+    linear-gradient(to right, rgba(139, 92, 246, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 229, 255, 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.i3-universe-glow {
+  background:
+    radial-gradient(circle at 18% 22%, rgba(139, 92, 246, 0.2), transparent 44%),
+    radial-gradient(circle at 80% 24%, rgba(0, 229, 255, 0.14), transparent 42%),
+    radial-gradient(circle at 52% 84%, rgba(245, 158, 11, 0.11), transparent 45%);
+}
+
+.i3-card {
+  background-color: rgba(21, 21, 32, 0.88);
+  border: 1px solid rgba(245, 245, 250, 0.1);
+  box-shadow: 0 22px 48px -26px rgba(0, 0, 0, 0.9);
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.i3-card:hover {
+  border-color: rgba(139, 92, 246, 0.36);
+}
+
+.i3-card-labs:hover {
+  border-color: rgba(0, 229, 255, 0.4);
+}
+
+.i3-card-studio:hover {
+  border-color: rgba(245, 158, 11, 0.42);
+}
+
+@keyframes i3-pulse-slow {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+.i3-ambient-pulse {
+  animation: i3-pulse-slow 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .i3-ambient-pulse {
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* I3LACKOUT artist identity, shared with i3lackout.com. */
+.i3lackout-text,
+.i3lackout-link.i3lackout-link {
+  color: var(--color-i3lackout);
+}
+.i3lackout-link.i3lackout-link:hover {
+  color: #FF6B7A;
+}
+.i3lackout-link.i3lackout-button {
+  border-color: rgb(255 32 32 / 60%);
+  background-color: rgb(255 32 32 / 12%);
+}
+.i3lackout-link.i3lackout-button:hover {
+  border-color: var(--color-i3lackout);
+  background-color: rgb(255 32 32 / 20%);
+}
+.i3-card-i3lackout:hover {
+  border-color: rgb(255 32 32 / 55%);
+}
+
+.ithreelab-text { color: var(--color-universe); }
+.ithreelab-link.ithreelab-link { color: var(--color-universe); }
+.ithreelab-link.ithreelab-link:hover { color: #C4B5FD; }

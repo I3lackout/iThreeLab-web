@@ -1,0 +1,65 @@
+# Vorlage für den statischen Caddy-Site-Block von ithreelab.com (iThreeLab)
+# Hinweis: Erst nach separater Freigabe sowie DNS-Umstellung auf dem VPS aktivieren.
+# MusicChain (musicchaini3.com) und I3LACKOUT (i3lackout.com) bleiben unberührt.
+
+www.ithreelab.com {
+	redir https://ithreelab.com{uri} permanent
+}
+
+ithreelab.com {
+	root * /var/www/ithreelab-web/dist
+	encode zstd gzip
+
+	# Sicherheitsheader
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Content-Security-Policy "frame-ancestors 'self' https://musicchaini3.com https://www.musicchaini3.com"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+
+	# Gehashte Vite-Assets langfristig cachen
+	@hashed_assets path /assets/*
+	header @hashed_assets Cache-Control "public, max-age=31536000, immutable"
+
+	# Einstiegs-HTML nicht langfristig cachen, damit Releases sofort ankommen
+	@html_entry path / /index.html
+	header @html_entry Cache-Control "no-cache, must-revalidate"
+
+	# SPA-Fallback auf index.html für clientseitige Routen (/labs, /labs/economics, /labs/intelligence, /studio, ...)
+	# Public synthetic endpoints only; the upstream is bound to loopback.
+	handle_path /api/economics-lab/* {
+		header Cache-Control "no-store"
+		request_body {
+			max_size 16KB
+		}
+		@health {
+			method GET
+			path /health
+		}
+		@simulation {
+			method POST
+			path /api/v1/economics/resources/analyze /api/v1/economics/pricing/simulate /api/v1/economics/forecast
+		}
+		handle @health {
+			reverse_proxy 127.0.0.1:8765
+		}
+		handle @simulation {
+			reverse_proxy 127.0.0.1:8765 {
+				transport http {
+					response_header_timeout 5s
+				}
+			}
+		}
+		handle {
+			respond "Economics endpoint not available" 404
+		}
+	}
+
+	handle {
+		try_files {path} /index.html
+		file_server
+	}
+}

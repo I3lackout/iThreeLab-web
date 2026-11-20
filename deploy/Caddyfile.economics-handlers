@@ -1,0 +1,28 @@
+	# Public synthetic endpoints only; the upstream is bound to loopback.
+	handle_path /api/economics-lab/* {
+		header Cache-Control "no-store"
+		request_body {
+			max_size 16KB
+		}
+		@health {
+			method GET
+			path /health
+		}
+		@simulation {
+			method POST
+			path /api/v1/economics/resources/analyze /api/v1/economics/pricing/simulate /api/v1/economics/forecast
+		}
+		handle @health {
+			reverse_proxy 127.0.0.1:8765
+		}
+		handle @simulation {
+			reverse_proxy 127.0.0.1:8765 {
+				transport http {
+					response_header_timeout 5s
+				}
+			}
+		}
+		handle {
+			respond "Economics endpoint not available" 404
+		}
+	}
